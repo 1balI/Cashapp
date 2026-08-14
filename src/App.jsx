@@ -99,3 +99,76 @@ function EditableNumber({ value, onSave, prefix = "", decimals = 2, fontSize = 1
     </span>
   );
 }
+function TabBar({ tab, setTab }) {
+  const tabs = [
+    { id: "home", label: "Home", icon: Home },
+    { id: "crypto", label: "Crypto", icon: Coins },
+    { id: "trade", label: "Trade", icon: TrendingUp },
+    { id: "tx", label: "Activity", icon: List },
+  ];
+  return (
+    <div
+      style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, background: "#0A0A0A",
+        borderTop: "1px solid #1E1E1E", display: "flex", justifyContent: "space-around",
+        padding: "10px 0 18px", zIndex: 10,
+      }}
+    >
+      {tabs.map((t) => {
+        const Icon = t.icon;
+        const active = tab === t.id;
+        return (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            style={{
+              background: "none", border: "none", display: "flex", flexDirection: "column",
+              alignItems: "center", gap: 4, color: active ? GREEN : MUTED, cursor: "pointer",
+              fontSize: 10.5, fontWeight: 600,
+            }}
+          >
+            <Icon size={20} color={active ? GREEN : MUTED} />
+            {t.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function DemoBadge() {
+  return (
+    <div
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 5, background: SURFACE,
+        border: `1px solid #2A2A2A`, borderRadius: 20, padding: "4px 10px",
+        fontSize: 10, fontWeight: 700, color: MUTED, letterSpacing: "0.06em",
+      }}
+    >
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: GREEN }} />
+      DEMO MODE
+    </div>
+  );
+}
+
+function HomeView({ username, setUsername, balance, setBalance, cardLast4, transactions }) {
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState(username);
+  const [editingBal, setEditingBal] = useState(false);
+  const [balDraft, setBalDraft] = useState(balance.toFixed(2));
+  const [hidden, setHidden] = useState(false);
+
+  const commitName = () => {
+    const trimmed = nameDraft.trim();
+    setUsername(trimmed.length ? trimmed : username);
+    setEditingName(false);
+  };
+  const commitBal = () => {
+    const parsed = parseFloat(balDraft.replace(/,/g, ""));
+    if (!isNaN(parsed) && parsed >= 0) setBalance(parsed);
+    else setBalDraft(balance.toFixed(2));
+    setEditingBal(false);
+  };
+
+  const hour = new Date().getHours();
+  const greeting =
